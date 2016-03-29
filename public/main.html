@@ -179,11 +179,19 @@ function getQueryVariable(variable)
 
 function Start() {
 
-    var userid = RandomString(10);
+    var pushState = false, loadUserData = false;
+    var userid = getQueryVariable("user");
+    if (userid == false) {
+       userid = RandomString(10);
+       pushState = true;
+    } else {
+       loadUserData = true;
+    }
     // allow specifying relay URL via querystring
     var relayURL = getQueryVariable("relayURL")
     if (relayURL == false) {
         relayURL = "wss://relay.widgetry.org/";
+        pushState = true;
     }
 
     jor1kparameters = {
@@ -213,35 +221,28 @@ function Start() {
     }
 
     // --------------------------------------------------------
-    // parse URL
-    var loc = document.URL.split('?');
-    userid = "";
-    if (loc[1]) {
-        var params = loc[1].split('&');
-        for(var i=0; i<params.length; i++) {
-            if (params[i].substr(0,4) == "user") {
-                userid = params[i].split('=')[1];
-                jor1kparameters.userid = userid;
-                jor1kparameters.fs.lazyloadimages.push("sync/tarballs/"+userid+".tar.bz2");
-            }
-            if (params[i].substr(0,3) == "cpu") {
-                jor1kparameters.system.cpu = params[i].split('=')[1];
-                if (jor1kparameters.system.cpu == "smp") {
-                    console.log("Load smp kernel");
-                    jor1kparameters.system.kernelURL = "vmlinuxsmp.bin.bz2";
-                    jor1kparameters.system.ncores = 4;
-                }
-            }
-            if (params[i].substr(0,1) == "n") {
-                jor1kparameters.system.ncores = params[i].split('=')[1];
-            }
-        }
+    if (loadUserData)
+        jor1kparameters.fs.lazyloadimages.push("sync/tarballs/"+userid+".tar.bz2");
+
+    var cpu = getQueryVariable("cpu");
+    if (cpu != false) {
+       jor1kparameters.system.cpu = cpu;
+       if (jor1kparameters.system.cpu == "smp") {
+             console.log("Load smp kernel");
+             jor1kparameters.system.kernelURL = "vmlinuxsmp.bin.bz2";
+             jor1kparameters.system.ncores = 4;
+       }
+    } else {
+       pushState = true;
     }
-    if (userid == "") {
-        if (loc[1])
-              window.history.pushState([], "", location + "&user="+jor1kparameters.userid);
-          else
-              window.history.pushState([], "", location + "?user="+jor1kparameters.userid);
+    var nCores = getQueryVariable("n");
+    if (nCores != false) {
+       jor1kparameters.system.ncores = nCores;
+    } else {
+       pushState = true;
+    }
+    if (pushState) {
+        window.history.pushState([], "", "?user="+encodeURIComponent(jor1kparameters.userid)+"&cpu="+encodeURIComponent(jor1kparameters.system.cpu)+"&n="+encodeURIComponent(jor1kparameters.system.ncores));
     }
 
     // --------------------------------------------------------
