@@ -223,20 +223,23 @@ function Start() {
     if (loadUserData)
         jor1kparameters.fs.lazyloadimages.push("sync/tarballs/"+userid+".tar.bz2");
 
+    var nCores = getQueryVariable("n");
+    if (nCores != false) {
+       jor1kparameters.system.ncores = nCores;
+    } else {
+       pushState = true;
+    }
     var cpu = getQueryVariable("cpu");
     if (cpu != false) {
        jor1kparameters.system.cpu = cpu;
        if (jor1kparameters.system.cpu == "smp") {
              console.log("Load smp kernel");
              jor1kparameters.system.kernelURL = "vmlinuxsmp.bin.bz2";
-             jor1kparameters.system.ncores = 4;
+             if (jor1kparameters.system.ncores != 4) {
+                jor1kparameters.system.ncores = 4;
+                pushState = true;
+             }
        }
-    } else {
-       pushState = true;
-    }
-    var nCores = getQueryVariable("n");
-    if (nCores != false) {
-       jor1kparameters.system.ncores = nCores;
     } else {
        pushState = true;
     }
