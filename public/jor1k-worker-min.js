@@ -1136,8 +1136,8 @@ function EthDev(ram, intdev, mac) {
         this.MAC_ADDR0 |= 0x15 << 8;
         this.MAC_ADDR0 |= 0x0;
 
-        this.MAC_ADDR1 |= (((Math.floor(Math.random()*256) << 8) & 0xfe) | 0x02);
-        this.MAC_ADDR1 |= Math.floor(Math.random()*256);
+        this.MAC_ADDR1 |= 0x15;
+        this.MAC_ADDR1 |= 0x0;
 
         this.ETH_HASH0_ADR = 0x0;
         this.ETH_HASH1_ADR = 0x0;
