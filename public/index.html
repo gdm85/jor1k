@@ -241,7 +241,7 @@ function Start() {
        pushState = true;
     }
     if (pushState) {
-        window.history.pushState([], "", "?user="+encodeURIComponent(jor1kparameters.userid)+"&cpu="+encodeURIComponent(jor1kparameters.system.cpu)+"&n="+encodeURIComponent(jor1kparameters.system.ncores));
+        window.history.pushState([], "", "?user="+encodeURIComponent(jor1kparameters.userid)+"&cpu="+encodeURIComponent(jor1kparameters.system.cpu)+"&n="+encodeURIComponent(jor1kparameters.system.ncores)+"&relayURL="+encodeURIComponent(relayURL));
     }
 
     // --------------------------------------------------------
