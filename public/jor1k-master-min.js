@@ -279,7 +279,7 @@ function EthernetMessageHandler(e) {
 
 function EthernetOpenHandler(e) {
 	if (this.authKey != "") {
-		this.socket.send("AUTH " + this.authKey);
+		this.socket.send("\0\0\0\0\0\0AUTH " + this.authKey);
 	}
     this.ntries = 0;
 }
