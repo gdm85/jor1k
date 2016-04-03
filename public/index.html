@@ -192,6 +192,12 @@ function Start() {
         relayURL = "wss://relay.widgetry.org/";
         pushState = true;
     }
+    var authKey = getQueryVariable("authKey")
+    if (authKey == false) {
+		console.log("authKey not specified in URL! relay server may not accept connectivity");
+		authKey = "";
+		pushState = true;
+    }
 
     jor1kparameters = {
         system: {
@@ -214,6 +220,7 @@ function Start() {
         statsid: "stats",          // object id for the statistics test
         fps: 10, // update interval of framebuffer
         relayURL: relayURL, // relay url for the network
+        authKey: authKey,   // authorization key for the relay server
         userid: userid, // unique user id string. Empty, choosen randomly, from a url, or from a cookie.
         syncURL: "sync/upload.php", // url to sync a certain folder
         path: "../sys/or1k/",
@@ -243,8 +250,8 @@ function Start() {
     } else {
        pushState = true;
     }
-    if (pushState) {
-        window.history.pushState([], "", "?user="+encodeURIComponent(jor1kparameters.userid)+"&cpu="+encodeURIComponent(jor1kparameters.system.cpu)+"&n="+encodeURIComponent(jor1kparameters.system.ncores)+"&relayURL="+encodeURIComponent(relayURL));
+    if (pushState && document.origin != "null") {
+        window.history.pushState([], "", "?user="+encodeURIComponent(jor1kparameters.userid)+"&cpu="+encodeURIComponent(jor1kparameters.system.cpu)+"&n="+encodeURIComponent(jor1kparameters.system.ncores)+"&relayURL="+encodeURIComponent(relayURL)+"&authKey="+encodeURIComponent(authKey));
     }
 
     // --------------------------------------------------------

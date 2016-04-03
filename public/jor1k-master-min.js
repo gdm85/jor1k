@@ -256,8 +256,9 @@ var message = require('../messagehandler');
 
 "use strict";
 
-function Ethernet(relayURL) {
+function Ethernet(relayURL, authKey) {
     this.url = relayURL;
+    this.authKey = authKey;
     this.onmessage = function(e) { };
     this.ntries = 0;
     this.OpenSocket();
@@ -277,6 +278,9 @@ function EthernetMessageHandler(e) {
 }
 
 function EthernetOpenHandler(e) {
+	if (this.authKey != "") {
+		this.socket.send("AUTH " + this.authKey);
+	}
     this.ntries = 0;
 }
 
@@ -1901,7 +1905,7 @@ function jor1kGUI(parameters)
     }.bind(this);
 
     if (this.params.relayURL) {
-        this.ethernet = new Ethernet(this.params.relayURL);
+        this.ethernet = new Ethernet(this.params.relayURL, this.params.authKey);
         this.ethernet.onmessage = function(e) {
             message.Send("ethmac", e.data);
         }.bind(this);
